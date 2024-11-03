@@ -1,22 +1,18 @@
 #include <iostream>
 #include <vector>
-
-enum GameMode {
-    Multiplayer,
-    EasyAI
-};
+#include "GameMode.h"
 
 class TicTacToe {
 public: 
     TicTacToe() {
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                board[i][j] = '-';
+                board_[i][j] = '-';
             }
         }
-        currentPlayer = 'X';
+        currentPlayer_ = 'X';
 
-        mode = Multiplayer;
+        mode_ = GameMode::Multiplayer;
     }
 
     void play() {
@@ -26,19 +22,19 @@ public:
 
             std::pair<int, int> place;
 
-            if (mode == EasyAI && currentPlayer == 'O') {
+            if (mode_ == GameMode::EasyAI && currentPlayer_ == 'O') {
                 place = randomPlace();
             }
             else {
-                place = playerTurn(currentPlayer);
+                place = playerTurn(currentPlayer_);
             }
 
 
-            board[place.first][place.second] = currentPlayer;
+            board_[place.first][place.second] = currentPlayer_;
 
-            if (checkWin(currentPlayer)) {
+            if (checkWin(currentPlayer_)) {
                 printBoard();
-                std::cout << "Player " << currentPlayer << " wins!" << std::endl;
+                std::cout << "Player " << currentPlayer_ << " wins!" << std::endl;
                 gameOver = true;
             }
             else if (isBoardFull()) {
@@ -47,25 +43,25 @@ public:
                 gameOver = true;
             }
 
-            currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+            currentPlayer_ = (currentPlayer_ == 'X') ? 'O' : 'X';
         }
     }
 
     void setGameMode(GameMode gm) {
-        mode = gm;
+        mode_ = gm;
     }
 
 private:
-    char board[3][3];
-    char currentPlayer;
-    GameMode mode;
+    char board_[3][3];
+    char currentPlayer_;
+    GameMode mode_;
 
     void printBoard() {
         std::cout << std::endl;
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                std::cout << " " << board[i][j] << " " << (j != 2 ? "|" : "");
+                std::cout << " " << board_[i][j] << " " << (j != 2 ? "|" : "");
             }
             std::cout << std::endl;
             if (i != 2) {
@@ -78,30 +74,30 @@ private:
 
     bool checkWin(char player) {
         for (int i = 0; i < 3; i++) {
-            if (board[i][0] == player &&
-                board[i][1] == player &&
-                board[i][2] == player) {
+            if (board_[i][0] == player &&
+                board_[i][1] == player &&
+                board_[i][2] == player) {
                 return true;
             }
         }
 
         for (int j = 0; j < 3; j++) {
-            if (board[0][j] == player &&
-                board[1][j] == player &&
-                board[2][j] == player) {
+            if (board_[0][j] == player &&
+                board_[1][j] == player &&
+                board_[2][j] == player) {
                 return true;
             }
         }
 
-        if (board[0][0] == player &&
-            board[1][1] == player &&
-            board[2][2] == player) {
+        if (board_[0][0] == player &&
+            board_[1][1] == player &&
+            board_[2][2] == player) {
             return true;
         }
 
-        if (board[0][2] == player &&
-            board[1][1] == player &&
-            board[2][0] == player) {
+        if (board_[0][2] == player &&
+            board_[1][1] == player &&
+            board_[2][0] == player) {
             return true;
         }
 
@@ -111,7 +107,7 @@ private:
     bool isBoardFull() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board[i][j] == '-') {
+                if (board_[i][j] == '-') {
                     return false;
                 }
             }
@@ -125,10 +121,10 @@ private:
         do {
             std::cout << "Player " << player << ", enter your move (row, col): ";
             std::cin >> row >> col;
-            if (row < 0 || row > 2 || col < 0 || col > 2 || board[row][col] != '-') {
+            if (row < 0 || row > 2 || col < 0 || col > 2 || board_[row][col] != '-') {
                 std::cout << "Invalid move. Try again." << std::endl;
             }
-        } while (row < 0 || row > 2 || col < 0 || col > 2 || board[row][col] != '-');
+        } while (row < 0 || row > 2 || col < 0 || col > 2 || board_[row][col] != '-');
         return std::make_pair(row, col);
     }
 
@@ -137,7 +133,7 @@ private:
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board[i][j] == '-') {
+                if (board_[i][j] == '-') {
                     possibleOptions.push_back(std::make_pair(i, j));
                 }
             }
@@ -158,11 +154,11 @@ int main(int argc, char* argv[]) {
     {
 
     case 1:
-        game.setGameMode(Multiplayer);
+        game.setGameMode(GameMode::Multiplayer);
         break;
 
     case 2:
-        game.setGameMode(EasyAI);
+        game.setGameMode(GameMode::EasyAI);
         break;
 
     default:
@@ -179,3 +175,4 @@ int main(int argc, char* argv[]) {
 // Ternary operator in C++
 // STACK vs HEAP memory, When to use which
 // OOP In C++ (Classes, Private, Public)
+// Headerfiles vs CPP files Scope

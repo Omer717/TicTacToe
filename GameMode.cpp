@@ -1,0 +1,4 @@
+enum GameMode {
+    Multiplayer,
+    EasyAI
+};
