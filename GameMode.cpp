@@ -1,4 +1,0 @@
-enum GameMode {
-    Multiplayer,
-    EasyAI
-};
