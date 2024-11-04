@@ -4,13 +4,13 @@
 #include "TicTacToe.h"
 
 
-TicTacToe::TicTacToe() {
+TicTacToe::TicTacToe(Player p1, Player p2): p1_(p1), p2_(p2) {
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			board_[i][j] = '-';
 		}
 	}
-	currentPlayer_ = 'X';
+	currentPlayer_ = &p1_;
 
 	mode_ = GameMode::Multiplayer;
 }
@@ -20,21 +20,13 @@ void TicTacToe::play() {
 	while (!gameOver) {
 		printBoard();
 
-		std::pair<int, int> place;
+		std::pair<int, int> place = currentPlayer_->doTurn(board_);
 
-		if (mode_ == GameMode::EasyAI && currentPlayer_ == 'O') {
-			place = randomPlace();
-		}
-		else {
-			place = playerTurn(currentPlayer_);
-		}
+		board_[place.first][place.second] = currentPlayer_->getSymbol();
 
-
-		board_[place.first][place.second] = currentPlayer_;
-
-		if (checkWin(currentPlayer_)) {
+		if (checkWin(currentPlayer_->getSymbol())) {
 			printBoard();
-			std::cout << "Player " << currentPlayer_ << " wins!" << std::endl;
+			std::cout << "Player " << currentPlayer_->getSymbol() << " wins!" << std::endl;
 			gameOver = true;
 		}
 		else if (isBoardFull()) {
@@ -43,7 +35,7 @@ void TicTacToe::play() {
 			gameOver = true;
 		}
 
-		currentPlayer_ = (currentPlayer_ == 'X') ? 'O' : 'X';
+		currentPlayer_ = (currentPlayer_ == &p1_) ? &p2_ : &p1_;
 	}
 }
 
@@ -111,29 +103,21 @@ bool TicTacToe::isBoardFull() {
 	return true;
 }
 
-std::pair<int, int> TicTacToe::playerTurn(char player) {
-	int row, col;
-	do {
-		std::cout << "Player " << player << ", enter your move (row, col): ";
-		std::cin >> row >> col;
-		if (row < 0 || row > 2 || col < 0 || col > 2 || board_[row][col] != '-') {
-			std::cout << "Invalid move. Try again." << std::endl;
-		}
-	} while (row < 0 || row > 2 || col < 0 || col > 2 || board_[row][col] != '-');
-	return std::make_pair(row, col);
+void TicTacToe::setPlayer(Player playerToReplace) {
+	p2_ = playerToReplace;
 }
 
-std::pair<int, int> TicTacToe::randomPlace() {
-	std::vector<std::pair<int, int>> possibleOptions;
+void TicTacToe::setPlayer(int playerNumber, Player playerToReplace) {
+	switch (playerNumber) {
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			if (board_[i][j] == '-') {
-				possibleOptions.push_back(std::make_pair(i, j));
-			}
-		}
+	case 1:
+		p1_ = playerToReplace;
+		break;
+
+	default:
+		p2_ = playerToReplace;
+		break;
 	}
-	return possibleOptions[rand() % possibleOptions.size()];
 }
 
 // What did I learn?

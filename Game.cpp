@@ -1,8 +1,17 @@
 #include "TicTacToe.h"
+#include "HumanTurn.cpp"
+#include "RandomTurn.cpp"
 
 int main(int argc, char* argv[]) {
 	int gamemode;
-	TicTacToe game;
+
+	HumanTurn humanTurn;
+	RandomTurn randTurn;
+
+	Player p1('X', &humanTurn);
+	Player p2('O', &humanTurn);
+
+	TicTacToe game(p1, p2);
 
 	std::cout << "Welcome to TicTacToe! Please choose a gamemode:" << std::endl << "1. Multiplayer" << std::endl << "2. EasyAI" << std::endl;
 	std::cin >> gamemode;
@@ -11,11 +20,10 @@ int main(int argc, char* argv[]) {
 	{
 
 	case 1:
-		game.setGameMode(GameMode::Multiplayer);
 		break;
 
 	case 2:
-		game.setGameMode(GameMode::EasyAI);
+		game.setPlayer(Player('O', &randTurn));
 		break;
 
 	default:
